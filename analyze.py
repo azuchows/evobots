@@ -5,6 +5,7 @@ backLegSensorValues = np.load("C:/Users/zucho/Desktop/UVM/CS206/data/BackLegSens
 
 frontLegSensorValues = np.load('C:/Users/zucho/Desktop/UVM/CS206/data/frontLegSensorData.npy')
 
-pyplot.plot(backLegSensorValues)
-pyplot.plot(frontLegSensorValues)
+pyplot.plot(backLegSensorValues, label = "Back Leg", linewidth = 3)
+pyplot.plot(frontLegSensorValues, label = "Front Leg")
+pyplot.legend()
 pyplot.show()

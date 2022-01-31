@@ -1,47 +1,21 @@
-import pybullet_data
-import pybullet as p
-import time
-import pyrosim.pyrosim as pyrosim
-import numpy as np
-import random
-import constants as c
+#import numpy as np
+#import constants as c
 
-physicsClient = p.connect(p.GUI)
-p.setAdditionalSearchPath(pybullet_data.getDataPath())
+from simulation import SIMULATION
 
-p.setGravity(0, 0, c.gravity)
-planeId = p.loadURDF("plane.urdf")
-p.loadSDF("world.sdf")
+simulation = SIMULATION()
 
-robot = p.loadURDF("body.urdf")
+#backLegTargetAngles = c.backLegAmplitude * np.sin(c.backLegFrequency * np.linspace(-np.pi, np.pi, c.STEPS) + c.backLegPhaseOffset)
 
-pyrosim.Prepare_To_Simulate(robot)
+#frontLegTargetAngles = c.frontLegAmplitude * np.sin(c.frontLegFrequency * np.linspace(-np.pi, np.pi, c.STEPS) + c.frontLegPhaseOffset)
 
-backLegSensorValues = np.zeros(c.STEPS)
-frontLegSensorValues = np.zeros(c.STEPS)
+##np.save('C:/Users/zucho/Desktop/UVM/CS206/data/backLegTargetAngles', backLegTargetAngles)
 
-backLegTargetAngles = c.backLegAmplitude * np.sin(c.backLegFrequency * np.linspace(-np.pi, np.pi, c.STEPS) + c.backLegPhaseOffset)
+##np.save('C:/Users/zucho/Desktop/UVM/CS206/data/frontLegTargetAngles', frontLegTargetAngles)
 
-frontLegTargetAngles = c.frontLegAmplitude * np.sin(c.frontLegFrequency * np.linspace(-np.pi, np.pi, c.STEPS) + c.frontLegPhaseOffset)
+##exit()
 
-#np.save('C:/Users/zucho/Desktop/UVM/CS206/data/backLegTargetAngles', backLegTargetAngles)
+#p.disconnect()
 
-#np.save('C:/Users/zucho/Desktop/UVM/CS206/data/frontLegTargetAngles', frontLegTargetAngles)
-
-#exit()
-
-for i in range(c.STEPS):
-    p.stepSimulation()
-    backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
-    frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")
-
-    pyrosim.Set_Motor_For_Joint(bodyIndex = robot, jointName = b'Torso_BackLeg', controlMode = p.POSITION_CONTROL, targetPosition = backLegTargetAngles[i], maxForce = c.maxForce)
-
-    pyrosim.Set_Motor_For_Joint(bodyIndex = robot, jointName = b'Torso_FrontLeg', controlMode = p.POSITION_CONTROL, targetPosition = frontLegTargetAngles[i], maxForce = c.maxForce)
-
-    time.sleep(c.sleepInt)
-
-p.disconnect()
-
-np.save('C:/Users/zucho/Desktop/UVM/CS206/data/BackLegSensorData', backLegSensorValues)
-np.save('C:/Users/zucho/Desktop/UVM/CS206/data/frontLegSensorData', frontLegSensorValues)
+#np.save('C:/Users/zucho/Desktop/UVM/CS206/data/BackLegSensorData', backLegSensorValues)
+#np.save('C:/Users/zucho/Desktop/UVM/CS206/data/frontLegSensorData', frontLegSensorValues)

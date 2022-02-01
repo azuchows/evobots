@@ -25,10 +25,7 @@ class SIMULATION:
         for t in range(c.STEPS):
             p.stepSimulation()
             self.robot.Sense(t)
-#           self.robot.Sense(self, t)
-            #pyrosim.Set_Motor_For_Joint(bodyIndex = robot, jointName = b'Torso_BackLeg', controlMode = p.POSITION_CONTROL, targetPosition = backLegTargetAngles[i], maxForce = c.maxForce)
-
-            #pyrosim.Set_Motor_For_Joint(bodyIndex = robot, jointName = b'Torso_FrontLeg', controlMode = p.POSITION_CONTROL, targetPosition = frontLegTargetAngles[i], maxForce = c.maxForce)
+            self.robot.Act(t)
 
             time.sleep(c.sleepInt)
 

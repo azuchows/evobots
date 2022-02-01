@@ -30,7 +30,7 @@ class SIMULATION:
             time.sleep(c.sleepInt)
 
 #        for s in self.robot.sensors:
-            self.robot.sensors[s].Save_Values()
+#            self.robot.sensors[s].Save_Values()
 
 #        for m in self.robot.motors:
-            self.robot.motors[m].Save_Values(self.robot)
+#            self.robot.motors[m].Save_Values(self.robot)

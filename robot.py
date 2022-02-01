@@ -4,6 +4,7 @@ from sensor import SENSOR
 from motor import MOTOR
 import numpy as np
 import constants as c
+from pyrosim.neuralNetwork import NEURAL_NETWORK
 
 class ROBOT:
     def __init__(self):
@@ -14,6 +15,8 @@ class ROBOT:
         self.Prepare_To_Sense()
 
         self.Prepare_To_Act()
+
+        self.nn = NEURAL_NETWORK("brain.nndf")
 
     def Prepare_To_Sense(self):
         self.sensors = {}
@@ -30,12 +33,18 @@ class ROBOT:
         for jointName in pyrosim.jointNamesToIndices:
             self.motors[jointName] = MOTOR(jointName)
 
-        self.amplitude = c.amplitude
-        self.frequency = c.frequency
-        self.offset = c.offset
+            self.motors[jointName].amplitude = c.amplitude
 
-        self.motorValues = self.amplitude * np.sin(self.frequency * np.linspace(-np.pi, np.pi, c.STEPS) + c.offset)
+            self.motors[jointName].frequency = c.frequency
+
+            self.motors[jointName].offset = c.offset
+
+            self.motors[jointName].motorValues = self.motors[jointName].amplitude * np.sin(self.motors[jointName].frequency * np.linspace(-np.pi, np.pi, c.STEPS) + self.motors[jointName].offset)
 
     def Act(self, time):
         for i in self.motors:
             self.motors[i].Set_Value(self, time)
+
+    def Think(self):
+        self.nn.Update()
+        self.nn.Print()

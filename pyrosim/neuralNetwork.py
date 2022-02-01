@@ -2,7 +2,7 @@ from pyrosim.neuron  import NEURON
 
 from pyrosim.synapse import SYNAPSE
 
-class NEURAL_NETWORK: 
+class NEURAL_NETWORK:
 
     def __init__(self,nndfFileName):
 
@@ -27,6 +27,11 @@ class NEURAL_NETWORK:
         self.Print_Motor_Neuron_Values()
 
         print("")
+
+    def Update(self):
+        for n in self.neurons:
+            if self.neurons[n].Is_Sensor_Neuron():
+                self.neurons[n].Update_Sensor_Neuron()
 
 # ---------------- Private methods --------------------------------------
 

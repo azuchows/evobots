@@ -18,14 +18,17 @@ class ROBOT:
 
         self.nn = NEURAL_NETWORK("brain.nndf")
 
+
     def Prepare_To_Sense(self):
         self.sensors = {}
         for linkName in pyrosim.linkNamesToIndices:
             self.sensors[linkName] = SENSOR(linkName)
 
+
     def Sense(self, time):
         for i in self.sensors:
             self.sensors[i].Get_Value(time)
+
 
     def Prepare_To_Act(self):
         self.motors = {}
@@ -33,17 +36,14 @@ class ROBOT:
         for jointName in pyrosim.jointNamesToIndices:
             self.motors[jointName] = MOTOR(jointName)
 
-            self.motors[jointName].amplitude = c.amplitude
-
-            self.motors[jointName].frequency = c.frequency
-
-            self.motors[jointName].offset = c.offset
-
-            self.motors[jointName].motorValues = self.motors[jointName].amplitude * np.sin(self.motors[jointName].frequency * np.linspace(-np.pi, np.pi, c.STEPS) + self.motors[jointName].offset)
 
     def Act(self, time):
-        for i in self.motors:
-            self.motors[i].Set_Value(self, time)
+        for n in self.nn.Get_Neuron_Names():
+            if self.nn.Is_Motor_Neuron(n):
+                jointName = self.nn.Get_Motor_Neurons_Joint(n)
+                desiredAngle = self.nn.Get_Value_Of(n)
+                self.motors[jointName].Set_Value(self, desiredAngle)
+
 
     def Think(self):
         self.nn.Update()

@@ -1,12 +1,8 @@
 import numpy as np
 
-backLegAmplitude = np.pi/3
-backLegFrequency = 8
-backLegPhaseOffset = 0
-
-frontLegAmplitude = np.pi/3
-frontLegFrequency = 8
-frontLegPhaseOffset = 0
+amplitude = np.pi/4
+frequency = 10
+offset = 0
 
 maxForce = 30
 

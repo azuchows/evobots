@@ -11,3 +11,5 @@ sleepInt = 1/60
 STEPS = 1000
 
 gravity = -9.8
+
+numberOfGenerations = 2

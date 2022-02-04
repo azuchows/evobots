@@ -30,6 +30,9 @@ class SIMULATION:
 
             time.sleep(c.sleepInt)
 
+    def Get_Fitness(self):
+        self.robot.Get_Fitness()
+
 #        for s in self.robot.sensors:
 #            self.robot.sensors[s].Save_Values()
 

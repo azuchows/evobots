@@ -1,6 +1,7 @@
 import numpy as np
 import pyrosim.pyrosim as pyrosim
 import os
+import random
 
 class SOLUTION:
     def __init__(self):
@@ -11,6 +12,11 @@ class SOLUTION:
         self.Generate_Body()
         self.Generate_Brain()
         os.system("python simulate.py")
+
+        file = open("fitness.txt", "r")
+        self.fitness = file.read()
+        file.close()
+#        print("fitness: " + str(self.fitness))
 
     def Create_World(self):
         pyrosim.Start_SDF("world.sdf")
@@ -49,3 +55,8 @@ class SOLUTION:
                 pyrosim.Send_Synapse(sourceNeuronName = currentRow, targetNeuronName = currentColumn + 3, weight = self.weights[currentRow][currentColumn])
 
         pyrosim.End()
+
+    def Mutate(self):
+        randomRow = random.randint(0,2)
+        randomColumn = random.randint(0,1)
+        self.weights[randomRow][randomColumn] = random.uniform(-1, 1)

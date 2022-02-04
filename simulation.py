@@ -8,7 +8,7 @@ import time
 class SIMULATION:
     def __init__(self):
 
-        self.physicsClient = p.connect(p.GUI)
+        self.physicsClient = p.connect(p.DIRECT)
 
         self.world = WORLD()
         self.robot = ROBOT()

@@ -6,10 +6,10 @@ offset = 0
 
 maxForce = 30
 
-sleepInt = 1/60
+sleepInt = 1/1000
 
 STEPS = 1000
 
 gravity = -9.8
 
-numberOfGenerations = 2
+numberOfGenerations = 10

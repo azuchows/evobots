@@ -7,16 +7,17 @@ class HILL_CLIMBER:
         self.parent = SOLUTION()
 
     def Evolve(self):
-        self.parent.Evaluate()
+        self.parent.Evaluate("GUI")
 
         for currentGeneration in range(c.numberOfGenerations):
-            self.Evolve_For_One_Generation()
+            print("Current generation number: " + str(currentGeneration))
+            self.Evolve_For_One_Generation("DIRECT")
 
-    def Evolve_For_One_Generation(self):
+    def Evolve_For_One_Generation(self, directOrGUI):
         self.Spawn()
         self.Mutate()
-        self.child.Evaluate()
-#        self.Print()
+        self.child.Evaluate(directOrGUI)
+        self.Print()
         self.Select()
 
     def Spawn(self):
@@ -27,7 +28,6 @@ class HILL_CLIMBER:
 
 
     def Select(self):
-        self.Print()
         if (float(self.parent.fitness) < float(self.child.fitness)):
             print("Selected parent!\n")
         else:
@@ -36,3 +36,6 @@ class HILL_CLIMBER:
 
     def Print(self):
         print("\n\nParent fitness: " + str(self.parent.fitness) + "\tChild fitness: " + str(self.child.fitness))
+
+    def Show_Best(self):
+        self.parent.Evaluate("GUI")

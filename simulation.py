@@ -6,9 +6,12 @@ from robot import ROBOT
 import time
 
 class SIMULATION:
-    def __init__(self):
+    def __init__(self, directOrGUI):
 
-        self.physicsClient = p.connect(p.DIRECT)
+        if directOrGUI == "DIRECT":
+            self.physicsClient = p.connect(p.DIRECT)
+        else:
+            self.physicsClient = p.connect(p.GUI)
 
         self.world = WORLD()
         self.robot = ROBOT()

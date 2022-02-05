@@ -12,4 +12,4 @@ STEPS = 1000
 
 gravity = -9.8
 
-numberOfGenerations = 10
+numberOfGenerations = 100

@@ -2,11 +2,12 @@ from solution import SOLUTION
 import constants as c
 import copy
 import os
+import numpy as np
 
 class PARALLEL_HILL_CLIMBER:
     def __init__(self):
-        os.system("del brain*.nndf")
-        os.system("del fitness*.txt")
+        os.system("del fitness*")
+        os.system("del brain*")
         self.nextAvailableID = 0
         self.parents = {}
 
@@ -14,6 +15,8 @@ class PARALLEL_HILL_CLIMBER:
             self.parents[p] = SOLUTION(self.nextAvailableID)
             self.nextAvailableID += 1
 
+        self.parents[0].Create_World()
+        self.parents[0].Generate_Body()
 
     def Evolve(self):
         self.Evaluate(self.parents, "DIRECT")
@@ -66,6 +69,8 @@ class PARALLEL_HILL_CLIMBER:
 
         print(self.parents[bestKey].fitness)
         self.parents[bestKey].Final_Simulation()
+
+#        np.savetxt("bestFit", self.parents[bestKey].weights, delimiter = '\t\t')
 
 
     def Evaluate(self, solutions, directOrGUI):

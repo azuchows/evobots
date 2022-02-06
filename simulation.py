@@ -6,15 +6,16 @@ from robot import ROBOT
 import time
 
 class SIMULATION:
-    def __init__(self, directOrGUI):
+    def __init__(self, directOrGUI, solutionID):
+        self.directOrGUI =  directOrGUI
 
-        if directOrGUI == "DIRECT":
+        if self.directOrGUI == "DIRECT":
             self.physicsClient = p.connect(p.DIRECT)
         else:
             self.physicsClient = p.connect(p.GUI)
 
         self.world = WORLD()
-        self.robot = ROBOT()
+        self.robot = ROBOT(solutionID)
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, c.gravity)
@@ -31,7 +32,8 @@ class SIMULATION:
             self.robot.Think()
             self.robot.Act(t)
 
-            time.sleep(c.sleepInt)
+            if self.directOrGUI == "GUI":
+                time.sleep(c.sleepInt)
 
     def Get_Fitness(self):
         self.robot.Get_Fitness()

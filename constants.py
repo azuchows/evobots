@@ -12,9 +12,11 @@ STEPS = 1000
 
 gravity = -9.8
 
-numberOfGenerations = 1
+numberOfGenerations = 10
 
-populationSize = 1
+populationSize = 10
 
-numSensorNeurons = 9
+numSensorNeurons = 4
 numMotorNeurons = 8
+
+motorJointRange = 0.2

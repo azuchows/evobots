@@ -8,11 +8,17 @@ STEPS = 1000
 
 gravity = -9.8
 
-numberOfGenerations = 10
+numberOfGenerations = 2
 
-populationSize = 10
+goalPopulationSize = 2
 
 numSensorNeurons = 4
 numMotorNeurons = 12
 
 motorJointRange = 0.5
+
+crossoverChance = 0.5
+
+mutationChance = 0.75
+
+numSpawn = 1

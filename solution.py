@@ -9,6 +9,7 @@ class SOLUTION:
     def __init__(self, ID):
         self.weights = np.random.rand(c.numSensorNeurons, c.numMotorNeurons) * 2 - 1
         self.myID = ID
+        self.age = 1
 
 
     def Start_Simulation(self, directOrGUI):
@@ -112,6 +113,7 @@ class SOLUTION:
     def Mutate(self):
         randomRow = random.randint(0, c.numSensorNeurons - 1)
         randomColumn = random.randint(0, c.numMotorNeurons - 1)
+#        print(str(self.myID) + "\t" + str(randomRow) + "\t" + str(randomColumn))
         self.weights[randomRow][randomColumn] = random.uniform(-1, 1)
 
     def Set_ID(self, ID):

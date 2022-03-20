@@ -5,6 +5,8 @@ import os
 import numpy as np
 import copy
 import random
+import matplotlib.pyplot as plt
+
 
 class PARETO_OPTIMIZATION:
     def __init__(self):
@@ -14,9 +16,12 @@ class PARETO_OPTIMIZATION:
         self.nextAvailableID = 0
         self.population = {}
         self.populationSize = 0
+        self.ages = []
+        self.fitnesses = []
+        self.generations = []
 
         # initial population generation
-        for individual in range(constants.goalPopulationSize):
+        for individual in range(constants.initialPopulationSize):
             self.population[individual] = SOLUTION(self.nextAvailableID)
             self.nextAvailableID += 1
 
@@ -25,6 +30,8 @@ class PARETO_OPTIMIZATION:
         # generate shared body and world files
         self.population[0].Create_World()
         self.population[0].Generate_Body()
+
+
 
 
     # begin evolution
@@ -37,12 +44,25 @@ class PARETO_OPTIMIZATION:
 
 
     def Evolve_For_One_Generation(self, directOrGUI, currentGeneration):
+#        print(self.populationSize)
         self.Crossover()
+#        self.Age()
+#        print(self.populationSize)
         self.Spawn()
-        self.Evaluate(self.population, "DIRECT")
+#        print(self.populationSize)
+        self.Evaluate(self.population, directOrGUI)
         self.Print(currentGeneration)
+        self.Store(currentGeneration)
+#        for individual in self.population:
+#            print(self.population[individual].age)
         self.Select()
-        self.Age()
+        self.Print(currentGeneration, True)
+
+    def Store(self, currentGeneration):
+        for s in self.population:
+            self.ages.append(int(self.population[s].age))
+            self.fitnesses.append(-1 * float(self.population[s].fitness))
+            self.generations.append(int(currentGeneration))
 
 
     def Crossover(self):
@@ -50,7 +70,7 @@ class PARETO_OPTIMIZATION:
         self.children = {}
 
         # create new members of the population by crossover
-        for p in range(self.populationSize):
+        for p in range(constants.numChildren):
 #            print(self.population)
 
             # picking parents
@@ -86,9 +106,12 @@ class PARETO_OPTIMIZATION:
             else:
                 child.age = p2.age
 
+        # increase age of parents
+        self.Age()
 
+        # combine child and total populations
         for c in self.children:
-            self.population[self.populationSize] = self.children[c]
+            self.population[self.children[c].myID] = self.children[c]
             self.populationSize = len(self.population)
 
 #        print(self.population)
@@ -96,7 +119,7 @@ class PARETO_OPTIMIZATION:
 
     def Spawn(self):
         for s in range(constants.numSpawn):
-            self.population[self.populationSize] = SOLUTION(self.nextAvailableID)
+            self.population[self.nextAvailableID] = SOLUTION(self.nextAvailableID)
             self.nextAvailableID += 1
             self.populationSize += 1
 
@@ -109,15 +132,36 @@ class PARETO_OPTIMIZATION:
             solutions[s].Wait_For_Simulation_To_End()
 
 
-    def Print(self, currentGeneration):
-        print("\n\nCurrent generation: " + str(currentGeneration))
+    def Print(self, currentGeneration, select = False):
+        if not select:
+            print("\n\nCurrent generation: " + str(currentGeneration))
+        else:
+            print("\n\nSelected population for generation: " + str(currentGeneration))
         for i in self.population:
             print(str(self.population[i].fitness))
         print("")
 
 
     def Select(self):
-        pass
+        r = 0
+        while self.populationSize > constants.targetPopulationSize and r <= constants.forcedRoundMaximum:
+            competitor_one = self.population.pop(random.choice(list(self.population)))
+            competitor_two = self.population.pop(random.choice(list(self.population)))
+
+            if float(competitor_one.fitness) < float(competitor_two.fitness) and competitor_one.age < competitor_two.age:
+                self.population[competitor_one.myID] = competitor_one
+
+            elif float(competitor_two.fitness) < float(competitor_one.fitness) and competitor_two.age < competitor_one.age:
+                self.population[competitor_two.myID] = competitor_two
+
+            else:
+                self.population[competitor_one.myID] = competitor_one
+                self.population[competitor_two.myID] = competitor_two
+
+            self.populationSize = len(self.population)
+
+            r += 1
+#            print(self.populationSize)
 
 
     def Age(self):
@@ -137,4 +181,16 @@ class PARETO_OPTIMIZATION:
         print(self.population[bestKey].fitness)
         self.population[bestKey].Final_Simulation()
 
-#        np.savetxt("bestFit", self.parents[bestKey].weights, delimiter = '\t\t')
+        np.savetxt("bestFit", self.population[bestKey].weights, delimiter = '\t\t')
+
+        plt.subplot(2, 1, 1)
+        plt.scatter(self.ages, self.fitnesses)
+        plt.xlabel("Genotypic Age (Generations)")
+        plt.ylabel("Fitness Score")
+#        plt.ylim(-10, 10)
+        plt.subplot(2, 1, 2)
+        plt.scatter(self.generations, self.fitnesses)
+        plt.xlabel("Age (Generations)")
+        plt.ylabel("Fitness Score")
+#        plt.ylim(-10, 10)
+        plt.show()

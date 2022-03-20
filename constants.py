@@ -1,5 +1,3 @@
-import numpy as np
-
 maxForce = 30
 
 sleepInt = 1/120
@@ -8,9 +6,12 @@ STEPS = 1000
 
 gravity = -9.8
 
-numberOfGenerations = 2
+numberOfGenerations = 50
 
-goalPopulationSize = 2
+numSpawn = 1
+
+initialPopulationSize = 4
+targetPopulationSize = 2 * (initialPopulationSize + numSpawn)
 
 numSensorNeurons = 4
 numMotorNeurons = 12
@@ -19,6 +20,8 @@ motorJointRange = 0.5
 
 crossoverChance = 0.5
 
-mutationChance = 0.75
+mutationChance = 0.05
 
-numSpawn = 1
+forcedRoundMaximum = 2000
+
+numChildren = targetPopulationSize

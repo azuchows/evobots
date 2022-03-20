@@ -28,7 +28,6 @@ class ROBOT:
         for linkName in pyrosim.linkNamesToIndices:
             self.sensors[linkName] = SENSOR(linkName)
 
-
     def Sense(self, time):
         for i in self.sensors:
             self.sensors[i].Get_Value(time)
@@ -54,10 +53,23 @@ class ROBOT:
 #        self.nn.Print()
 
     def Get_Fitness(self):
+        count = 0
+        sum = 0
+
+        for sensor in ['LLFL', 'LLRL', 'LRFL', 'LRRL']:
+            for t in self.sensors[sensor].values:
+                sum += t
+                count += 1
+
+        average = sum / count
+
+        transform = 10000 ** -(average+1)
+
         basePositionAndOrientation = p.getBasePositionAndOrientation(self.robot)
         basePosition = basePositionAndOrientation[0]
         xPosition = basePosition[0]
+        fitness = xPosition * transform
         file = open("tmp" + str(self.ID) + ".txt", "w")
-        file.write(str(xPosition))
+        file.write(str(fitness))
         file.close()
         os.system("rename tmp" + str(self.ID) + ".txt fitness" + str(self.ID) + ".txt")

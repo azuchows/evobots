@@ -6,7 +6,7 @@ STEPS = 1000
 
 gravity = -9.8
 
-numberOfGenerations = 50
+numberOfGenerations = 250
 
 numSpawn = 1
 

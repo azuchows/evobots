@@ -26,7 +26,14 @@ class SOLUTION:
         while not os.path.exists("fitness" + str(self.myID) + ".txt"):
             time.sleep(0.01)
 
-        file = open("fitness" + str(self.myID) + ".txt", "r")
+        file_read = False
+
+        while not file_read:
+            try:
+                file = open("fitness" + str(self.myID) + ".txt", "r")
+                file_read = True
+            except PermissionError:
+                time.sleep(0.01)
 
         self.fitness = file.read()
 #        print(self.fitness)

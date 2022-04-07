@@ -7,7 +7,8 @@ import constants as c
 
 class SOLUTION:
     def __init__(self, ID):
-        self.weights = np.random.rand(c.numSensorNeurons, c.numMotorNeurons) * 2 - 1
+        self.motorWeights = np.random.rand(c.numHiddenNeurons, c.numMotorNeurons) * 2 - 1
+        self.sensorWeights = np.random.rand(c.numHiddenNeurons, c.numSensorNeurons) * 2 - 1
         self.myID = ID
         self.age = 1
 
@@ -91,37 +92,45 @@ class SOLUTION:
     def Generate_Brain(self):
         pyrosim.Start_NeuralNetwork("brain" + str(self.myID) + ".nndf")
 
-        pyrosim.Send_Sensor_Neuron(name = 0 , linkName = "RFF")
-        pyrosim.Send_Sensor_Neuron(name = 1, linkName = "LRF")
-        pyrosim.Send_Sensor_Neuron(name = 2, linkName = "RRF")
-        pyrosim.Send_Sensor_Neuron(name = 3, linkName = "LFF")
+        # automate creation of neurons...
+        numNeurons = 0
 
-        pyrosim.Send_Motor_Neuron(name = 4, jointName = "Torso_URFL")
-        pyrosim.Send_Motor_Neuron(name = 5, jointName = "Torso_ULFL")
-        pyrosim.Send_Motor_Neuron(name = 6, jointName = "Torso_URRL")
-        pyrosim.Send_Motor_Neuron(name = 7, jointName = "Torso_ULRL")
-        pyrosim.Send_Motor_Neuron(name = 8, jointName = "URFL_LRFL")
-        pyrosim.Send_Motor_Neuron(name = 9, jointName = "ULFL_LLFL")
-        pyrosim.Send_Motor_Neuron(name = 10, jointName = "URRL_LRRL")
-        pyrosim.Send_Motor_Neuron(name = 11, jointName = "ULRL_LLRL")
-        pyrosim.Send_Motor_Neuron(name = 12, jointName = "LRFL_RFF")
-        pyrosim.Send_Motor_Neuron(name = 13, jointName = "LLFL_LFF")
-        pyrosim.Send_Motor_Neuron(name = 14, jointName = "LRRL_RRF")
-        pyrosim.Send_Motor_Neuron(name = 15, jointName = "LLRL_LRF")
+        if c.targetsForSensors == []:
+            for l in pyrosim.linkNamesToIndices:
+                pyrosim.Send_Sensor_Neuron(name = numNeurons, linkName = l)
+                numNeurons += 1
+        else:
+            for n in c.targetsForSensors:
+                pyrosim.Send_Sensor_Neuron(name = numNeurons, linkName = n)
+                numNeurons += 1
 
+        for h in range(c.numHiddenNeurons):
+            pyrosim.Send_Hidden_Neuron(name = numNeurons + h)
 
-        for currentRow in range(c.numSensorNeurons):
-            for currentColumn in range(c.numMotorNeurons):
-                pyrosim.Send_Synapse(sourceNeuronName = currentRow, targetNeuronName = currentColumn + c.numSensorNeurons, weight = self.weights[currentRow][currentColumn])
+        numNeurons += c.numHiddenNeurons
+
+        for m in pyrosim.jointNamesToIndices:
+            pyrosim.Send_Motor_Neuron(name = numNeurons, jointName = m)
+            numNeurons += 1
+
+        for h in range(c.numHiddenNeurons):
+            for w in range(c.numSensorNeurons):
+                pyrosim.Send_Synapse(sourceNeuronName = w, targetNeuronName = h + c.numSensorNeurons, weight = self.sensorWeights[h][w])
+
+            for x in range(c.numMotorNeurons):
+                pyrosim.Send_Synapse(sourceNeuronName = h + c.numSensorNeurons, targetNeuronName = (x + c.numSensorNeurons + c.numHiddenNeurons), weight = self.motorWeights[h][x])
 
         pyrosim.End()
 
 
     def Mutate(self):
-        randomRow = random.randint(0, c.numSensorNeurons - 1)
-        randomColumn = random.randint(0, c.numMotorNeurons - 1)
-#        print(str(self.myID) + "\t" + str(randomRow) + "\t" + str(randomColumn))
-        self.weights[randomRow][randomColumn] = random.uniform(-1, 1)
+        motorOrSensor = np.random.rand()
+
+        if motorOrSensor > 0.5:
+            self.sensorWeights[random.randint(0, c.numHiddenNeurons) - 1][random.randint(0, c.numSensorNeurons) - 1] = random.uniform(-1, 1)
+        else:
+            self.motorWeights[random.randint(0, c.numHiddenNeurons) - 1][random.randint(0, c.numMotorNeurons) - 1] = random.uniform(-1, 1)
+
 
     def Set_ID(self, ID):
         self.myID = ID

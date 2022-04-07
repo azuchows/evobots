@@ -140,9 +140,14 @@ def Send_Joint(name,parent,child,type,position, jointAxis):
 
     joint.Save(f, jointAxis)
 
+    jointNamesToIndices[name] = joint
+
 def Send_Motor_Neuron(name,jointName):
 
     f.write('    <neuron name = "' + str(name) + '" type = "motor"  jointName = "' + jointName + '" />\n')
+
+def Send_Hidden_Neuron(name):
+    f.write('    <neuron name = "' + str(name) + '" type = "hidden" />\n')
 
 def Send_Sensor_Neuron(name,linkName):
 
@@ -220,6 +225,10 @@ def Start_URDF(filename):
     global linkNamesToIndices
 
     linkNamesToIndices = {}
+
+    global jointNamesToIndices
+
+    jointNamesToIndices = {}    
 
     global filetype
 

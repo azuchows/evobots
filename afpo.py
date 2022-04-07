@@ -90,12 +90,17 @@ class PARETO_OPTIMIZATION:
             self.nextAvailableID += 1
 
             # assign weights from both parents by crossover
-            for r in range(constants.numSensorNeurons):
-                for c in range(constants.numMotorNeurons):
+            for h in range(constants.numHiddenNeurons):
+                for s in range(constants.numSensorNeurons):
                     if np.random.random() >= (1-constants.crossoverChance):
-                        child.weights[r][c] = p1.weights[r][c]
+                        child.sensorWeights[h][s] = p1.sensorWeights[h][s]
                     else:
-                        child.weights[r][c] = p2.weights[r][c]
+                        child.sensorWeights[h][s] = p2.sensorWeights[h][s]
+                for m in range(constants.numMotorNeurons):
+                    if np.random.random() >= (1-constants.crossoverChance):
+                        child.motorWeights[h][m] = p1.motorWeights[h][m]
+                    else:
+                        child.motorWeights[h][m] = p2.motorWeights[h][m]
 
             # chance to mutate a random weight
             if np.random.random() >= (1-constants.mutationChance):
@@ -181,7 +186,7 @@ class PARETO_OPTIMIZATION:
         print(self.population[bestKey].fitness)
         self.population[bestKey].Final_Simulation()
 
-        np.savetxt("bestFit", self.population[bestKey].weights, delimiter = '\t\t')
+#        np.savetxt("bestFit", self.population[bestKey].weights, delimiter = '\t\t')
 
         plt.subplot(2, 1, 1)
         plt.scatter(self.ages, self.fitnesses)

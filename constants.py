@@ -6,7 +6,7 @@ STEPS = 1000
 
 gravity = -9.8
 
-numberOfGenerations = 10
+numberOfGenerations = 100
 
 numSpawn = 1
 
@@ -15,7 +15,7 @@ targetPopulationSize = 2 * (initialPopulationSize + numSpawn)
 
 targetsForSensors = []
 numSensorNeurons = 13
-numMotorNeurons = 12
+numMotorNeurons = 10
 numHiddenNeurons = 6
 
 motorJointRange = 0.5

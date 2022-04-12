@@ -92,7 +92,6 @@ class SOLUTION:
     def Generate_Brain(self):
         pyrosim.Start_NeuralNetwork("brain" + str(self.myID) + ".nndf")
 
-        # automate creation of neurons...
         numNeurons = 0
 
         if c.targetsForSensors == []:

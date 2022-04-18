@@ -44,19 +44,22 @@ class PARETO_OPTIMIZATION:
 
 
     def Evolve_For_One_Generation(self, directOrGUI, currentGeneration):
+        try:
 #        print(self.populationSize)
-        self.Crossover()
-#        self.Age()
+            self.Crossover()
 #        print(self.populationSize)
-        self.Spawn()
+            self.Spawn()
 #        print(self.populationSize)
-        self.Evaluate(self.population, directOrGUI)
-        self.Print(currentGeneration)
-        self.Store(currentGeneration)
+            self.Evaluate(self.population, directOrGUI)
+            self.Print(currentGeneration)
+            self.Store(currentGeneration)
 #        for individual in self.population:
 #            print(self.population[individual].age)
-        self.Select()
-        self.Print(currentGeneration, True)
+            self.Select()
+            self.Print(currentGeneration, True)
+        except MemoryError:
+            self.Show_Best()
+            exit()
 
     def Store(self, currentGeneration):
         for s in self.population:
@@ -90,17 +93,41 @@ class PARETO_OPTIMIZATION:
             self.nextAvailableID += 1
 
             # assign weights from both parents by crossover
-            for h in range(constants.numHiddenNeurons):
+            if constants.numHiddenNeurons != 0:
+                for h in range(constants.numHiddenNeurons):
+                    for s in range(constants.numSensorNeurons):
+                        if np.random.random() >= (1-constants.crossoverChance):
+                            child.sensorWeights[h][s] = p1.sensorWeights[h][s]
+                        else:
+                            child.sensorWeights[h][s] = p2.sensorWeights[h][s]
+                    for m in range(constants.numMotorNeurons):
+                        if np.random.random() >= (1-constants.crossoverChance):
+                            child.motorWeights[h][m] = p1.motorWeights[h][m]
+                        else:
+                            child.motorWeights[h][m] = p2.motorWeights[h][m]
+
+            else:
                 for s in range(constants.numSensorNeurons):
-                    if np.random.random() >= (1-constants.crossoverChance):
-                        child.sensorWeights[h][s] = p1.sensorWeights[h][s]
+                    for m in range(constants.numMotorNeurons):
+                        if np.random.random() >= (1-constants.crossoverChance):
+                            child.weights[s][m] = p1.weights[s][m]
+                        else:
+                            child.weights[s][m] = p2.weights[s][m]
+
+            if constants.selfConnectNeurons:
+                for n in range(constants.numMotorNeurons + constants.numHiddenNeurons):
+                    if np.random.random() >= (1 - constants.crossoverChance):
+                        child.hiddenWeights[n] = p1.hiddenWeights[n]
                     else:
-                        child.sensorWeights[h][s] = p2.sensorWeights[h][s]
+                        child.hiddenWeights[n] = p2.hiddenWeights[n]
+
+            if constants.recurrentNeurons and constants.numHiddenNeurons != 0:
                 for m in range(constants.numMotorNeurons):
-                    if np.random.random() >= (1-constants.crossoverChance):
-                        child.motorWeights[h][m] = p1.motorWeights[h][m]
-                    else:
-                        child.motorWeights[h][m] = p2.motorWeights[h][m]
+                    for h in range(constants.numHiddenNeurons):
+                        if np.random.random() >= (1 - constants.crossoverChance):
+                            child.recurrentWeights[m][h] = p1.recurrentWeights[m][h]
+                        else:
+                            child.recurrentWeights[m][h] = p2.recurrentWeights[m][h]
 
             # chance to mutate a random weight
             if np.random.random() >= (1-constants.mutationChance):
@@ -158,6 +185,13 @@ class PARETO_OPTIMIZATION:
 
             elif float(competitor_two.fitness) < float(competitor_one.fitness) and competitor_two.age < competitor_one.age:
                 self.population[competitor_two.myID] = competitor_two
+
+            elif float(competitor_one.fitness) == float(competitor_two.fitness):
+                if competitor_one.age < competitor_two.age:
+                    self.population[competitor_one.myID] = competitor_one
+                else:
+                    self.population[competitor_two.myID] = competitor_two
+
 
             else:
                 self.population[competitor_one.myID] = competitor_one

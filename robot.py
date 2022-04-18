@@ -53,22 +53,15 @@ class ROBOT:
 #        self.nn.Print()
 
     def Get_Fitness(self):
-        count = 0
-        sum = 0
-
-        for sensor in ['LLFL', 'LLRL', 'LRFL', 'LRRL']:
-            for t in self.sensors[sensor].values:
-                sum += t
-                count += 1
-
-        average = sum / count
-
-        transform = 10000 ** -(average+1)
-
         basePositionAndOrientation = p.getBasePositionAndOrientation(self.robot)
         basePosition = basePositionAndOrientation[0]
         xPosition = basePosition[0]
-        fitness = xPosition * transform
+
+        hIndex = pyrosim.linkNamesToIndices["Head"]
+        hState = p.getLinkState(self.robot, hIndex)
+        hZPos = hState[0][2]
+
+        fitness = xPosition * hZPos
         file = open("tmp" + str(self.ID) + ".txt", "w")
         file.write(str(fitness))
         file.close()

@@ -3,7 +3,9 @@ import pybullet_data
 import pybullet as p
 from world import WORLD
 from robot import ROBOT
+import numpy as np
 import time
+import os
 
 class SIMULATION:
     def __init__(self, directOrGUI, solutionID):
@@ -22,6 +24,9 @@ class SIMULATION:
 
         self.Run()
 
+        np.save("tmp" + str(self.robot.ID), self.robot.feet)
+        os.system("rename tmp" + str(self.robot.ID) + ".npy footprints" + str(self.robot.ID) + ".npy")
+
     def __del__(self):
         p.disconnect()
 
@@ -31,7 +36,6 @@ class SIMULATION:
             self.robot.Sense(t)
             self.robot.Think()
             self.robot.Act(t)
-
             if self.directOrGUI == "GUI":
                 time.sleep(c.sleepInt)
 

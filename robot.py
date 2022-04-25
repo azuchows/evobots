@@ -23,6 +23,8 @@ class ROBOT:
 
         os.system("del brain" + str(solutionID) + ".nndf")
 
+        self.feet = []
+
     def Prepare_To_Sense(self):
         self.sensors = {}
         for linkName in pyrosim.linkNamesToIndices:
@@ -31,6 +33,13 @@ class ROBOT:
     def Sense(self, time):
         for i in self.sensors:
             self.sensors[i].Get_Value(time)
+
+        ft = []
+
+        for l in ['RFF', 'LRF', 'RRF', 'LFF']:
+            ft.append(pyrosim.Get_Touch_Sensor_Value_For_Link(l))
+
+        self.feet.append(ft)
 
 
     def Prepare_To_Act(self):
@@ -57,11 +66,7 @@ class ROBOT:
         basePosition = basePositionAndOrientation[0]
         xPosition = basePosition[0]
 
-        hIndex = pyrosim.linkNamesToIndices["Head"]
-        hState = p.getLinkState(self.robot, hIndex)
-        hZPos = hState[0][2]
-
-        fitness = xPosition * hZPos
+        fitness = xPosition
         file = open("tmp" + str(self.ID) + ".txt", "w")
         file.write(str(fitness))
         file.close()

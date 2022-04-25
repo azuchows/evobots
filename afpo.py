@@ -12,6 +12,7 @@ class PARETO_OPTIMIZATION:
     def __init__(self):
         os.system("del fitness*")
         os.system("del brain*")
+        os.system("del tmp*.npy")
 
         self.nextAvailableID = 0
         self.population = {}
@@ -30,8 +31,6 @@ class PARETO_OPTIMIZATION:
         # generate shared body and world files
         self.population[0].Create_World()
         self.population[0].Generate_Body()
-
-
 
 
     # begin evolution
@@ -220,16 +219,12 @@ class PARETO_OPTIMIZATION:
         print(self.population[bestKey].fitness)
         self.population[bestKey].Final_Simulation()
 
-#        np.savetxt("bestFit", self.population[bestKey].weights, delimiter = '\t\t')
+        footprints = self.population[bestKey].footprints
 
-        plt.subplot(2, 1, 1)
-        plt.scatter(self.ages, self.fitnesses)
-        plt.xlabel("Genotypic Age (Generations)")
-        plt.ylabel("Fitness Score")
-#        plt.ylim(-10, 10)
-        plt.subplot(2, 1, 2)
-        plt.scatter(self.generations, self.fitnesses)
-        plt.xlabel("Age (Generations)")
-        plt.ylabel("Fitness Score")
-#        plt.ylim(-10, 10)
-        plt.show()
+        af = np.array([self.ages, self.fitnesses])
+        gf = np.array([self.generations, self.fitnesses])
+
+        np.save("fitB", af)
+        np.save("gFitB", gf)
+
+        np.save("feetB", footprints)

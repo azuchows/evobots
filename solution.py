@@ -55,6 +55,22 @@ class SOLUTION:
 #        print("fitness: " + str(self.fitness))
         os.system("del fitness" + str(self.myID) + ".txt")
 
+        while not os.path.exists("footprints" + str(self.myID) + ".npy"):
+            time.sleep(0.01)
+
+        file_read = False
+
+        while not file_read:
+            try:
+                feet = np.load("footprints" + str(self.myID) + ".npy")
+                file_read = True
+            except:
+                time.sleep(0.01)
+
+        self.footprints = feet
+
+        os.system("del footprints" + str(self.myID) + ".npy")
+
 
     def Create_World(self):
         pyrosim.Start_SDF("world.sdf")
@@ -65,71 +81,40 @@ class SOLUTION:
     def Generate_Body(self):
         pyrosim.Start_URDF("body.urdf")
 
-        pyrosim.Send_Cube(name = "Torso", pos = [0,0,1.5] , size = [0.25,0.375,0.75])
+        pyrosim.Send_Cube(name = "Torso", pos = [0,0,1] , size = [1.5,0.5,0.25])
 
-        pyrosim.Send_Joint(name = "Torso_Neck", parent = "Torso", child = "Neck", type = "revolute", position = [0,0,1.875], jointAxis = "0 1 0")
+        # Right Front Leg
+        pyrosim.Send_Joint(name = "Torso_URFL", parent = "Torso", child = "URFL", type = "revolute", position = [0.5, 0.25, 1], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "URFL", pos = [0, 0.0625, -0.375], size = [0.125, 0.125, 0.75])
+        pyrosim.Send_Joint(name = "URFL_LRFL", parent = "URFL", child = "LRFL", type = "revolute", position = [0, 0.0625, -0.675], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "LRFL", pos = [0.25, 0, 0], size = [0.5, 0.125, 0.125])
+        pyrosim.Send_Joint(name = "LRFL_RFF", parent = "LRFL", child = "RFF", type = "revolute", position = [0.4375, 0, 0], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "RFF", pos = [0, 0, -0.125], size = [0.125, 0.125, 0.25])
 
-        pyrosim.Send_Cube(name = "Neck", pos = [0, 0, 0.0625], size = [0.125,0.125,0.125])
+        # Left Rear Leg
+        pyrosim.Send_Joint(name = "Torso_ULRL", parent = "Torso", child = "ULRL", type = "revolute", position = [-0.5, -0.25, 1], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "ULRL", pos = [0, -0.0625, -0.375], size = [0.125, 0.125, 0.75])
+        pyrosim.Send_Joint(name = "ULRL_LLRL", parent = "ULRL", child = "LLRL", type = "revolute", position = [0, -0.0625, -0.675], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "LLRL", pos = [0.25, 0, 0], size = [0.5, 0.125, 0.125])
+        pyrosim.Send_Joint(name = "LLRL_LRF", parent = "LLRL", child = "LRF", type = "revolute", position = [0.4375, 0, 0], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "LRF", pos = [0, 0, -0.125], size = [0.125, 0.125, 0.25])
 
-        pyrosim.Send_Joint(name = "Neck_Head", parent = "Neck", child = "Head", type = "revolute", position = [0,0,0.125], jointAxis = "0 1 0")
+        # Right Rear Leg
+        pyrosim.Send_Joint(name = "Torso_URRL", parent = "Torso", child = "URRL", type = "revolute", position = [-0.5, 0.25, 1], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "URRL", pos = [0, 0.0625, -0.375], size = [0.125, 0.125, 0.75])
+        pyrosim.Send_Joint(name = "URRL_LRRL", parent = "URRL", child = "LRRL", type = "revolute", position = [0, 0.0625, -0.675], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "LRRL", pos = [0.25, 0, 0], size = [0.5, 0.125, 0.125])
+        pyrosim.Send_Joint(name = "LRRL_RRF", parent = "LRRL", child = "RRF", type = "revolute", position = [0.4375, 0, 0], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "RRF", pos = [0, 0, -0.125], size = [0.125, 0.125, 0.25])
 
-        pyrosim.Send_Cube(name = "Head", pos = [0, 0, 0.125], size = [0.25, 0.25, 0.25])
+        # Left Front Leg
+        pyrosim.Send_Joint(name = "Torso_ULFL", parent = "Torso", child = "ULFL", type = "revolute", position = [0.5, -0.25, 1], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "ULFL", pos = [0, -0.0625, -0.375], size = [0.125, 0.125, 0.75])
+        pyrosim.Send_Joint(name = "ULFL_LLFL", parent = "ULFL", child = "LLFL", type = "revolute", position = [0, -0.0625, -0.675], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "LLFL", pos = [0.25, 0, 0], size = [0.5, 0.125, 0.125])
+        pyrosim.Send_Joint(name = "LLFL_LFF", parent = "LLFL", child = "LFF", type = "revolute", position = [0.4375, 0, 0], jointAxis = "0 1 0")
+        pyrosim.Send_Cube(name = "LFF", pos = [0, 0, -0.125], size = [0.125, 0.125, 0.25])
 
-        pyrosim.Send_Joint(name = "Torso_LShoulder", parent = "Torso", child = "LShoulder", type = "revolute", position = [0,-0.1875, 1.875], jointAxis = "1 0 0")
-
-        pyrosim.Send_Cube(name = "LShoulder", pos = [0, -0.0025, 0], size = [0.005, 0.005, 0.005])
-
-        pyrosim.Send_Joint(name = "LShoulder_LArm", parent = "LShoulder", child = "LArm", type = "revolute", position = [0, -0.0025, 0], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "LArm", pos = [0, -0.0625, -0.25], size = [0.125, 0.125, 0.5])
-
-        pyrosim.Send_Joint(name = "LArm_LForearm", parent = "LArm", child = "LForearm", type = "revolute", position = [0, -0.0625, -0.5], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "LForearm", pos = [0, 0, -0.2], size = [0.125, 0.125, 0.4])
-
-        pyrosim.Send_Joint(name = "Torso_RShoulder", parent = "Torso", child = "RShoulder", type = "revolute", position = [0,0.1875, 1.875], jointAxis = "1 0 0")
-
-        pyrosim.Send_Cube(name = "RShoulder", pos = [0, 0.0025, 0], size = [0.005, 0.005, 0.005])
-
-        pyrosim.Send_Joint(name = "RShoulder_RArm", parent = "RShoulder", child = "RArm", type = "revolute", position = [0, 0.0025, 0], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "RArm", pos = [0, 0.0625, -0.25], size = [0.125, 0.125, 0.5])
-
-        pyrosim.Send_Joint(name = "RArm_RForearm", parent = "RArm", child = "RForearm", type = "revolute", position = [0, 0.0625, -0.5], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "RForearm", pos = [0, 0, -0.2], size = [0.125, 0.125, 0.4])
-
-        pyrosim.Send_Joint(name = "Torso_LHip", parent = "Torso", child = "LHip", type = "revolute", position = [0, 0.125, 1.125], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "LHip", pos = [0, 0, -0.0025], size = [0.005, 0.005, 0.005])
-
-        pyrosim.Send_Joint(name = "LHip_LULeg", parent = "LHip", child = "LULeg", type = "revolute", position = [0, 0, -0.0025], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "LULeg", pos = [0, 0, -0.25], size = [0.125, 0.125, 0.5])
-
-        pyrosim.Send_Joint(name = "LULeg_LLeg", parent = "LULeg", child = "LLeg", type = "revolute", position = [0, 0, -0.5], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "LLeg", pos = [0, 0, -0.25], size = [0.125, 0.125, 0.5])
-
-        pyrosim.Send_Joint(name = "LLeg_LFoot", parent = "LLeg", child = "LFoot", type = "revolute", position = [0, 0, -0.5], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "LFoot", pos = [-0.1, 0, -0.0625], size = [0.4, 0.125, 0.125])
-
-        pyrosim.Send_Joint(name = "Torso_RHip", parent = "Torso", child = "RHip", type = "revolute", position = [0, -0.125, 1.125], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "RHip", pos = [0, 0, -0.0025], size = [0.005, 0.005, 0.005])
-
-        pyrosim.Send_Joint(name = "RHip_RULeg", parent = "RHip", child = "RULeg", type = "revolute", position = [0, 0, -0.0025], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "RULeg", pos = [0, 0, -0.25], size = [0.125, 0.125, 0.5])
-
-        pyrosim.Send_Joint(name = "RULeg_RLeg", parent = "RULeg", child = "RLeg", type = "revolute", position = [0, 0, -0.5], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "RLeg", pos = [0, 0, -0.25], size = [0.125, 0.125, 0.5])
-
-        pyrosim.Send_Joint(name = "RLeg_RFoot", parent = "RLeg", child = "RFoot", type = "revolute", position = [0, 0, -0.5], jointAxis = "0 1 0")
-
-        pyrosim.Send_Cube(name = "RFoot", pos = [-0.1, 0, -0.0625], size = [0.4, 0.125, 0.125])
 
         pyrosim.End()
 

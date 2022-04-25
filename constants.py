@@ -1,12 +1,11 @@
-maxForce = 15
-
+maxForce = 30
 sleepInt = 1/120
 
 STEPS = 1000
 
 gravity = -9.8
 
-numberOfGenerations = 500
+numberOfGenerations = 50
 
 numSpawn = 1
 
@@ -14,11 +13,11 @@ initialPopulationSize = 10
 targetPopulationSize = 10
 
 targetsForSensors = []
-numSensorNeurons = 17
-numMotorNeurons = 16
-numHiddenNeurons = 5
-recurrentNeurons = True
-selfConnectNeurons = True
+numSensorNeurons = 13
+numMotorNeurons = 12
+numHiddenNeurons = 0
+recurrentNeurons = False
+selfConnectNeurons = False
 
 
 motorJointRange = 0.5

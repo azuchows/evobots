@@ -20,10 +20,14 @@ class PARETO_OPTIMIZATION:
         self.ages = []
         self.fitnesses = []
         self.generations = []
+        self.bestAge = []
+        self.bestFitnesses = []
+        self.bestGenerations = []
 
         # initial population generation
         for individual in range(constants.initialPopulationSize):
             self.population[individual] = SOLUTION(self.nextAvailableID)
+#            self.population[individual].fitness = 0
             self.nextAvailableID += 1
 
         self.populationSize = len(self.population)
@@ -32,6 +36,7 @@ class PARETO_OPTIMIZATION:
         self.population[0].Create_World()
         self.population[0].Generate_Body()
 
+#        self.Show_Best()
 
     # begin evolution
     def Evolve(self):
@@ -66,6 +71,17 @@ class PARETO_OPTIMIZATION:
             self.fitnesses.append(-1 * float(self.population[s].fitness))
             self.generations.append(int(currentGeneration))
 
+        bestFit = -1000
+        bestIndividual = 0
+
+        for s in self.population:
+            if float(self.population[s].fitness) * -1 > bestFit:
+                bestIndividual = s
+                bestFit = float(self.population[s].fitness) * -1
+
+        self.bestAge.append(int(self.population[bestIndividual].age))
+        self.bestFitnesses.append(bestFit)
+        self.bestGenerations.append(int(currentGeneration))
 
     def Crossover(self):
 #        print(self.populationSize)
@@ -224,7 +240,13 @@ class PARETO_OPTIMIZATION:
         af = np.array([self.ages, self.fitnesses])
         gf = np.array([self.generations, self.fitnesses])
 
-        np.save("fitB", af)
-        np.save("gFitB", gf)
+        np.save("fit" + constants.population, af)
+        np.save("gFit" + constants.population, gf)
 
-        np.save("feetB", footprints)
+        np.save("feet" + constants.population, footprints)
+
+        bf = np.array([self.bestAge, self.bestFitnesses])
+        cf = np.array([self.bestGenerations, self.bestFitnesses])
+
+        np.save(constants.population + "fit", bf)
+        np.save(constants.population + "gFit", cf)

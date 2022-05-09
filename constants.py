@@ -30,7 +30,7 @@ forcedRoundMaximum = 10000
 
 numChildren = 10
 
-population = 'B'
+population = 'A'
 
 if population == 'A':
     numHiddenNeurons = 4

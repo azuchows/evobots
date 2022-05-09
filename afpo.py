@@ -61,6 +61,7 @@ class PARETO_OPTIMIZATION:
 #            print(self.population[individual].age)
             self.Select()
             self.Print(currentGeneration, True)
+            
         except MemoryError:
             self.Show_Best()
             exit()
